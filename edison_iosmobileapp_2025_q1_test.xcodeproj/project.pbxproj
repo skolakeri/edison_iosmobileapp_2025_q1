@@ -1,0 +1,557 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		C269ECA72D6FFC800035A655 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C269EC8E2D6FFC7D0035A655 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C269EC952D6FFC7D0035A655;
+			remoteInfo = edison_iosmobileapp_2025_q1_test;
+		};
+		C269ECB12D6FFC800035A655 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C269EC8E2D6FFC7D0035A655 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C269EC952D6FFC7D0035A655;
+			remoteInfo = edison_iosmobileapp_2025_q1_test;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		C269EC962D6FFC7D0035A655 /* edison_iosmobileapp_2025_q1_test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = edison_iosmobileapp_2025_q1_test.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C269ECA62D6FFC800035A655 /* edison_iosmobileapp_2025_q1_testTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = edison_iosmobileapp_2025_q1_testTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C269ECB02D6FFC800035A655 /* edison_iosmobileapp_2025_q1_testUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = edison_iosmobileapp_2025_q1_testUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		C269EC982D6FFC7D0035A655 /* edison_iosmobileapp_2025_q1_test */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = edison_iosmobileapp_2025_q1_test;
+			sourceTree = "<group>";
+		};
+		C269ECA92D6FFC800035A655 /* edison_iosmobileapp_2025_q1_testTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = edison_iosmobileapp_2025_q1_testTests;
+			sourceTree = "<group>";
+		};
+		C269ECB32D6FFC800035A655 /* edison_iosmobileapp_2025_q1_testUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = edison_iosmobileapp_2025_q1_testUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C269EC932D6FFC7D0035A655 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C269ECA32D6FFC800035A655 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C269ECAD2D6FFC800035A655 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		C269EC8D2D6FFC7D0035A655 = {
+			isa = PBXGroup;
+			children = (
+				C269EC982D6FFC7D0035A655 /* edison_iosmobileapp_2025_q1_test */,
+				C269ECA92D6FFC800035A655 /* edison_iosmobileapp_2025_q1_testTests */,
+				C269ECB32D6FFC800035A655 /* edison_iosmobileapp_2025_q1_testUITests */,
+				C269EC972D6FFC7D0035A655 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		C269EC972D6FFC7D0035A655 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C269EC962D6FFC7D0035A655 /* edison_iosmobileapp_2025_q1_test.app */,
+				C269ECA62D6FFC800035A655 /* edison_iosmobileapp_2025_q1_testTests.xctest */,
+				C269ECB02D6FFC800035A655 /* edison_iosmobileapp_2025_q1_testUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		C269EC952D6FFC7D0035A655 /* edison_iosmobileapp_2025_q1_test */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C269ECBA2D6FFC800035A655 /* Build configuration list for PBXNativeTarget "edison_iosmobileapp_2025_q1_test" */;
+			buildPhases = (
+				C269EC922D6FFC7D0035A655 /* Sources */,
+				C269EC932D6FFC7D0035A655 /* Frameworks */,
+				C269EC942D6FFC7D0035A655 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				C269EC982D6FFC7D0035A655 /* edison_iosmobileapp_2025_q1_test */,
+			);
+			name = edison_iosmobileapp_2025_q1_test;
+			packageProductDependencies = (
+			);
+			productName = edison_iosmobileapp_2025_q1_test;
+			productReference = C269EC962D6FFC7D0035A655 /* edison_iosmobileapp_2025_q1_test.app */;
+			productType = "com.apple.product-type.application";
+		};
+		C269ECA52D6FFC800035A655 /* edison_iosmobileapp_2025_q1_testTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C269ECBD2D6FFC800035A655 /* Build configuration list for PBXNativeTarget "edison_iosmobileapp_2025_q1_testTests" */;
+			buildPhases = (
+				C269ECA22D6FFC800035A655 /* Sources */,
+				C269ECA32D6FFC800035A655 /* Frameworks */,
+				C269ECA42D6FFC800035A655 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C269ECA82D6FFC800035A655 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				C269ECA92D6FFC800035A655 /* edison_iosmobileapp_2025_q1_testTests */,
+			);
+			name = edison_iosmobileapp_2025_q1_testTests;
+			packageProductDependencies = (
+			);
+			productName = edison_iosmobileapp_2025_q1_testTests;
+			productReference = C269ECA62D6FFC800035A655 /* edison_iosmobileapp_2025_q1_testTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		C269ECAF2D6FFC800035A655 /* edison_iosmobileapp_2025_q1_testUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C269ECC02D6FFC800035A655 /* Build configuration list for PBXNativeTarget "edison_iosmobileapp_2025_q1_testUITests" */;
+			buildPhases = (
+				C269ECAC2D6FFC800035A655 /* Sources */,
+				C269ECAD2D6FFC800035A655 /* Frameworks */,
+				C269ECAE2D6FFC800035A655 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C269ECB22D6FFC800035A655 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				C269ECB32D6FFC800035A655 /* edison_iosmobileapp_2025_q1_testUITests */,
+			);
+			name = edison_iosmobileapp_2025_q1_testUITests;
+			packageProductDependencies = (
+			);
+			productName = edison_iosmobileapp_2025_q1_testUITests;
+			productReference = C269ECB02D6FFC800035A655 /* edison_iosmobileapp_2025_q1_testUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C269EC8E2D6FFC7D0035A655 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1620;
+				LastUpgradeCheck = 1620;
+				TargetAttributes = {
+					C269EC952D6FFC7D0035A655 = {
+						CreatedOnToolsVersion = 16.2;
+					};
+					C269ECA52D6FFC800035A655 = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = C269EC952D6FFC7D0035A655;
+					};
+					C269ECAF2D6FFC800035A655 = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = C269EC952D6FFC7D0035A655;
+					};
+				};
+			};
+			buildConfigurationList = C269EC912D6FFC7D0035A655 /* Build configuration list for PBXProject "edison_iosmobileapp_2025_q1_test" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = C269EC8D2D6FFC7D0035A655;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = C269EC972D6FFC7D0035A655 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C269EC952D6FFC7D0035A655 /* edison_iosmobileapp_2025_q1_test */,
+				C269ECA52D6FFC800035A655 /* edison_iosmobileapp_2025_q1_testTests */,
+				C269ECAF2D6FFC800035A655 /* edison_iosmobileapp_2025_q1_testUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C269EC942D6FFC7D0035A655 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C269ECA42D6FFC800035A655 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C269ECAE2D6FFC800035A655 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C269EC922D6FFC7D0035A655 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C269ECA22D6FFC800035A655 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C269ECAC2D6FFC800035A655 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		C269ECA82D6FFC800035A655 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C269EC952D6FFC7D0035A655 /* edison_iosmobileapp_2025_q1_test */;
+			targetProxy = C269ECA72D6FFC800035A655 /* PBXContainerItemProxy */;
+		};
+		C269ECB22D6FFC800035A655 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C269EC952D6FFC7D0035A655 /* edison_iosmobileapp_2025_q1_test */;
+			targetProxy = C269ECB12D6FFC800035A655 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		C269ECB82D6FFC800035A655 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		C269ECB92D6FFC800035A655 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		C269ECBB2D6FFC800035A655 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"edison_iosmobileapp_2025_q1_test/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.SunjayKolakeri.edison-iosmobileapp-2025-q1-test";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C269ECBC2D6FFC800035A655 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"edison_iosmobileapp_2025_q1_test/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.SunjayKolakeri.edison-iosmobileapp-2025-q1-test";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		C269ECBE2D6FFC800035A655 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.SunjayKolakeri.edison-iosmobileapp-2025-q1-testTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/edison_iosmobileapp_2025_q1_test.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/edison_iosmobileapp_2025_q1_test";
+			};
+			name = Debug;
+		};
+		C269ECBF2D6FFC800035A655 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.SunjayKolakeri.edison-iosmobileapp-2025-q1-testTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/edison_iosmobileapp_2025_q1_test.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/edison_iosmobileapp_2025_q1_test";
+			};
+			name = Release;
+		};
+		C269ECC12D6FFC800035A655 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.SunjayKolakeri.edison-iosmobileapp-2025-q1-testUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = edison_iosmobileapp_2025_q1_test;
+			};
+			name = Debug;
+		};
+		C269ECC22D6FFC800035A655 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.SunjayKolakeri.edison-iosmobileapp-2025-q1-testUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = edison_iosmobileapp_2025_q1_test;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C269EC912D6FFC7D0035A655 /* Build configuration list for PBXProject "edison_iosmobileapp_2025_q1_test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C269ECB82D6FFC800035A655 /* Debug */,
+				C269ECB92D6FFC800035A655 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C269ECBA2D6FFC800035A655 /* Build configuration list for PBXNativeTarget "edison_iosmobileapp_2025_q1_test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C269ECBB2D6FFC800035A655 /* Debug */,
+				C269ECBC2D6FFC800035A655 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C269ECBD2D6FFC800035A655 /* Build configuration list for PBXNativeTarget "edison_iosmobileapp_2025_q1_testTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C269ECBE2D6FFC800035A655 /* Debug */,
+				C269ECBF2D6FFC800035A655 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C269ECC02D6FFC800035A655 /* Build configuration list for PBXNativeTarget "edison_iosmobileapp_2025_q1_testUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C269ECC12D6FFC800035A655 /* Debug */,
+				C269ECC22D6FFC800035A655 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = C269EC8E2D6FFC7D0035A655 /* Project object */;
+}
