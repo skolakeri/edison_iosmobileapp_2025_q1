@@ -14,7 +14,7 @@ struct ToDoItem: Identifiable {
 }
 
 struct ContentView: View {
-    
+    @State private var editingItemId: UUID?
     @State private var inputTask: String = ""
     @State private var toDoItems: [ToDoItem] = [ToDoItem(title: "test")]
     
@@ -40,8 +40,26 @@ struct ContentView: View {
                                     toDoItems[index].isComplete.toggle()
                                 }
                             }
-                        Text(item.title)
-                            .strikethrough(item.isComplete)
+                        if editingItemId == item.id {
+                            TextField("", text: Binding(
+                                get: { item.title },
+                                set: { newValue in
+                                    if let index = toDoItems.firstIndex(where: { $0.id == item.id }) {
+                                        toDoItems[index].title = newValue
+                                    }
+                                }
+                            ))
+                            .onSubmit {
+                                editingItemId = nil
+                            }
+                            
+                        } else {
+                            Text(item.title)
+                                .strikethrough(item.isComplete)
+                                .onTapGesture {
+                                    editingItemId = item.id
+                                }
+                        }
                         Spacer()
                         Button {
                             if let index = toDoItems.firstIndex(where: { $0.id == item.id }) {
