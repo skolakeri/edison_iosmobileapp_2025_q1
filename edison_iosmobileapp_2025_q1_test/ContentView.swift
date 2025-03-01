@@ -7,91 +7,52 @@
 
 import SwiftUI
 
-struct ToDoItem: Identifiable, Codable {
-    var id: UUID = UUID()
-    var title: String
-    var isComplete: Bool = false
-}
-
 struct ContentView: View {
-    @AppStorage("toDoItems") private var toDoItemsData: Data = Data()
     
-    @State private var editingItemId: UUID?
-    @State private var inputTask: String = ""
-    @State private var toDoItems: [ToDoItem] = [ToDoItem(title: "test")]
+    @StateObject private var viewModel = ToDoListViewModel()
     
-    private func saveToDoItems() {
-        do {
-            let data = try JSONEncoder().encode(toDoItems)
-            UserDefaults.standard.set(data, forKey: "toDoItems")
-        } catch {
-            print("Error saving data: \(error)")
-        }
-    }
-    
-    private func loadToDoItems() {
-        if let data = UserDefaults.standard.data(forKey: "toDoItems") {
-            do {
-                toDoItems = try JSONDecoder().decode([ToDoItem].self, from: data)
-            } catch {
-                print("Error loading data: \(error)")
-            }
-        }
-    }
     
     var body: some View {
         VStack {
             HStack {
-                TextField("Input task", text: $inputTask)
+                TextField("Input task", text: $viewModel.inputTask)
                 Button("Add") {
-                    if inputTask.isEmpty { return }
-                    toDoItems.append(ToDoItem(title: inputTask))
-                    inputTask = ""
-                    saveToDoItems()
+                    viewModel.addItem()
+                    
                 }
             }
             .padding([.leading, .trailing, .bottom], 15)
             .background(Color.blue.opacity(0.2))
             
             List {
-                ForEach(toDoItems) { item in
+                ForEach(viewModel.toDoItems) { item in
                     HStack {
                         Image(systemName: item.isComplete ? "checkmark.circle.fill" : "circle")
                             .onTapGesture {
-                                if let index = toDoItems.firstIndex(where: { $0.id == item.id }) {
-                                    toDoItems[index].isComplete.toggle()
-                                    saveToDoItems()
-                                }
+                                viewModel.toggleItem(item)
+                                
                             }
-                        if editingItemId == item.id {
+                        if viewModel.editingItemId == item.id {
                             TextField("", text: Binding(
                                 get: { item.title },
                                 set: { newValue in
-                                    if let index = toDoItems.firstIndex(where: { $0.id == item.id }) {
-                                        toDoItems[index].title = newValue
-                                        saveToDoItems()
-                                    }
+                                    viewModel.updateItemText(item, newValue)
                                 }
                             ))
                             .onSubmit {
-                                editingItemId = nil
-                                saveToDoItems()
+                                viewModel.onSubmit()
                             }
                             
                         } else {
                             Text(item.title)
                                 .strikethrough(item.isComplete)
                                 .onTapGesture {
-                                    editingItemId = item.id
-                                    saveToDoItems()
+                                    viewModel.onTapItem(item)
                                 }
                         }
                         Spacer()
                         Button {
-                            if let index = toDoItems.firstIndex(where: { $0.id == item.id }) {
-                                toDoItems.remove(at: index)
-                                saveToDoItems()
-                            }
+                            viewModel.removeItem(item)
                         } label: {
                             Image(systemName: "minus.circle")
                         }
@@ -104,7 +65,7 @@ struct ContentView: View {
             Spacer()
         }
         .onAppear() {
-            loadToDoItems()
+            viewModel.loadData()
         }
     }
 }
