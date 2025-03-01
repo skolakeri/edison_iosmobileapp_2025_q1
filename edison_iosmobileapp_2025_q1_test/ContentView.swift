@@ -44,7 +44,9 @@ struct ContentView: View {
                             .strikethrough(item.isComplete)
                         Spacer()
                         Button {
-                            
+                            if let index = toDoItems.firstIndex(where: { $0.id == item.id }) {
+                                toDoItems.remove(at: index)
+                            }
                         } label: {
                             Image(systemName: "minus.circle")
                         }
