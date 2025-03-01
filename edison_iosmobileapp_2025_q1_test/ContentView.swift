@@ -7,15 +7,55 @@
 
 import SwiftUI
 
+struct ToDoItem: Identifiable {
+    var id: UUID = UUID()
+    var title: String
+    var isComplete: Bool = false
+}
+
 struct ContentView: View {
+    
+    @State private var inputTask: String = ""
+    @State private var toDoItems: [ToDoItem] = [ToDoItem(title: "test")]
+    
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+            HStack {
+                TextField("Input task", text: $inputTask)
+                Button("Add") {
+                    if inputTask.isEmpty { return }
+                    toDoItems.append(ToDoItem(title: inputTask))
+                    inputTask = ""
+                }
+            }
+            .padding([.leading, .trailing, .bottom], 15)
+            .background(Color.blue.opacity(0.2))
+            
+            List {
+                ForEach(toDoItems) { item in
+                    HStack {
+                        Image(systemName: item.isComplete ? "checkmark.circle.fill" : "circle")
+                            .onTapGesture {
+                                if let index = toDoItems.firstIndex(where: { $0.id == item.id }) {
+                                    toDoItems[index].isComplete.toggle()
+                                }
+                            }
+                        Text(item.title)
+                            .strikethrough(item.isComplete)
+                        Spacer()
+                        Button {
+                            
+                        } label: {
+                            Image(systemName: "minus.circle")
+                        }
+                        .buttonStyle(BorderlessButtonStyle())
+                    }
+                }
+            }
+            
+            
+            Spacer()
         }
-        .padding()
     }
 }
 
