@@ -17,6 +17,15 @@ class ToDoListViewModel: ObservableObject {
     @Published var inputTask: String = ""
     @Published var inputPriority: TaskPriority = .medium
     @Published var toDoItems: [ToDoItem] = [ToDoItem(title: "test")]
+    @Published var hideCompleted: Bool = false
+    
+    var filteredItems: [ToDoItem] {
+        if hideCompleted {
+            return toDoItems.filter { !$0.isComplete }
+        } else {
+            return toDoItems
+        }
+    }
     
     func addItem() {
         if inputTask.isEmpty { return }
@@ -54,8 +63,14 @@ class ToDoListViewModel: ObservableObject {
         }
     }
     
+    func toggleHideCompleted() {
+        hideCompleted.toggle()
+        UserDefaults.standard.set(hideCompleted, forKey: "hideCompleted")
+    }
+    
     func loadData() {
         toDoItems = repository.loadToDoItems()
+        hideCompleted = UserDefaults.standard.bool(forKey: "hideCompleted")
         sortItems()
     }
     
@@ -74,7 +89,6 @@ class ToDoListViewModel: ObservableObject {
             if item1.isComplete != item2.isComplete {
                 return !item1.isComplete
             }
-            
             return item1.priority.sortOrder < item2.priority.sortOrder
         }
     }

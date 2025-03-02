@@ -5,7 +5,7 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            // Task input section
+            
             VStack(spacing: 10) {
                 TextField("Input task", text: $viewModel.inputTask)
                     .padding(8)
@@ -43,17 +43,27 @@ struct ContentView: View {
             .cornerRadius(10)
             .padding(.horizontal)
             
-            // Task list
+            
+            HStack {
+                Toggle("Hide Completed Tasks", isOn: $viewModel.hideCompleted)
+                    .onChange(of: viewModel.hideCompleted) {
+                        viewModel.toggleHideCompleted()
+                    }
+                    .toggleStyle(SwitchToggleStyle(tint: .blue))
+            }
+            .padding(.horizontal)
+            
+            
             List {
-                ForEach(viewModel.toDoItems) { item in
+                ForEach(viewModel.filteredItems) { item in
                     HStack {
-                        // Completion toggle
+                        
                         Image(systemName: item.isComplete ? "checkmark.circle.fill" : "circle")
                             .onTapGesture {
                                 viewModel.toggleItem(item)
                             }
                         
-                        // Title (editable or display)
+                        
                         if viewModel.editingItemId == item.id {
                             TextField("", text: Binding(
                                 get: { item.title },
@@ -66,13 +76,13 @@ struct ContentView: View {
                                 .onTapGesture { viewModel.onTapItem(item) }
                         }
                         
-                        // Priority indicator
+                        
                         Image(systemName: item.priority.icon)
                             .foregroundColor(item.priority.color)
                         
                         Spacer()
                         
-                        // Priority menu
+                        
                         Menu {
                             ForEach(TaskPriority.allCases, id: \.self) { priority in
                                 Button(action: { viewModel.updateItemPriority(item, priority) }) {
@@ -83,7 +93,7 @@ struct ContentView: View {
                             Image(systemName: "flag")
                         }
                         
-                        // Remove button
+                        
                         Button {
                             viewModel.removeItem(item)
                         } label: {
