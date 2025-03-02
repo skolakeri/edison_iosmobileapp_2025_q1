@@ -20,13 +20,22 @@ class ToDoListViewModel: ObservableObject {
     @Published var toDoItems: [ToDoItem] = []
     @Published var hideCompleted: Bool = false
     @Published var hasNotificationPermission: Bool = false
+    @Published var searchQuery: String = ""
     
     var filteredItems: [ToDoItem] {
+        var result = toDoItems
+        
         if hideCompleted {
-            return toDoItems.filter { !$0.isComplete }
-        } else {
-            return toDoItems
+            result = result.filter { !$0.isComplete }
         }
+        
+        if !searchQuery.isEmpty {
+            result = result.filter {
+                $0.title.lowercased().contains(searchQuery.lowercased())
+            }
+        }
+        
+        return result
     }
     
     func addItem() {
