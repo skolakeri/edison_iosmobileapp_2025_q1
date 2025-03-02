@@ -24,26 +24,41 @@ class ToDoListViewModel: ObservableObject {
     @Published var availableTags: [String] = ["Work", "Personal", "Home", "Shopping", "Urgent", "Later"]
     @Published var tagInput: String = ""
     
-    func addTagToTask(_ item: ToDoItem, tag: String) {
-        if let index = toDoItems.firstIndex(where: { $0.id == item.id }) {
+    func addTagToTask(_ itemId: UUID, tag: String) {
+        if let index = toDoItems.firstIndex(where: { $0.id == itemId }) {
+            
             let trimmedTag = tag.trimmingCharacters(in: .whitespacesAndNewlines)
             if trimmedTag.isEmpty || toDoItems[index].tags.contains(trimmedTag) {
                 return
             }
             
-            toDoItems[index].tags.append(trimmedTag)
+            
+            var updatedTags = toDoItems[index].tags
+            updatedTags.append(trimmedTag)
+            toDoItems[index].tags = updatedTags
+            
             
             if !availableTags.contains(trimmedTag) {
                 availableTags.append(trimmedTag)
             }
             
+            
+            objectWillChange.send()
+            
             repository.saveToDoItems(toDoItems)
         }
     }
     
-    func removeTagFromTask(_ item: ToDoItem, tag: String) {
-        if let index = toDoItems.firstIndex(where: { $0.id == item.id }) {
-            toDoItems[index].tags.removeAll { $0 == tag }
+    func removeTagFromTask(_ itemId: UUID, tag: String) {
+        if let index = toDoItems.firstIndex(where: { $0.id == itemId }) {
+            
+            var updatedTags = toDoItems[index].tags
+            updatedTags.removeAll { $0 == tag }
+            toDoItems[index].tags = updatedTags
+            
+            
+            objectWillChange.send()
+            
             repository.saveToDoItems(toDoItems)
         }
     }

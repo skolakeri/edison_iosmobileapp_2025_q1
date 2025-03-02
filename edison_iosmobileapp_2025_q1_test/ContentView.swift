@@ -130,7 +130,7 @@ struct ContentView: View {
                                     .padding(.leading, 30)
                                 }
                                 
-                                // Tags section
+                                
                                 if !item.tags.isEmpty {
                                     ScrollView(.horizontal, showsIndicators: false) {
                                         HStack {
@@ -144,11 +144,12 @@ struct ContentView: View {
                                                     .foregroundColor(.primary)
                                             }
                                         }
+                                        .id(item.tags.hashValue)
                                     }
                                     .padding(.leading, 30)
                                 }
 
-                                // Add tag button
+                                
                                 Button {
                                     selectedItemForTags = item
                                 } label: {
@@ -186,7 +187,7 @@ struct ContentView: View {
         .searchable(text: $viewModel.searchQuery, prompt: "Search tasks")
         .sheet(item: $selectedItemForTags) { item in
             NavigationView {
-                TagManagementView(viewModel: viewModel, item: item)
+                TagManagementView(viewModel: viewModel, itemId: item.id)
                     .navigationTitle("Manage Tags")
                     .navigationBarItems(
                         trailing: Button("Done") { selectedItemForTags = nil }
@@ -240,75 +241,138 @@ struct NotificationDatePicker: View {
 
 struct TagManagementView: View {
     @ObservedObject var viewModel: ToDoListViewModel
-    let item: ToDoItem
+    let itemId: UUID
     @State private var newTag: String = ""
+    @State private var showAddedAnimation: Bool = false
+    @State private var lastAddedTag: String = ""
+    
+    private var item: ToDoItem? {
+        viewModel.toDoItems.first(where: { $0.id == itemId })
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Tags")
+            Text("Current Tags")
                 .font(.headline)
             
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack {
-                    ForEach(item.tags, id: \.self) { tag in
-                        TagView(tag: tag) {
-                            viewModel.removeTagFromTask(item, tag: tag)
+            if let item = item, !item.tags.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack {
+                        ForEach(item.tags, id: \.self) { tag in
+                            TagView(tag: tag) {
+                                withAnimation(.spring()) {
+                                    viewModel.removeTagFromTask(itemId, tag: tag)
+                                }
+                            }
+                            .transition(.scale)
                         }
                     }
+                    .padding(.vertical, 4)
                 }
-                .padding(.vertical, 4)
+                .id(item.tags.hashValue) 
+            } else {
+                Text("No tags yet")
+                    .foregroundColor(.gray)
+                    .italic()
+                    .padding(.vertical, 8)
             }
             
             Divider()
             
-            
             HStack {
                 TextField("Add tag", text: $newTag)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
-                
-                Button(action: {
-                    if !newTag.isEmpty {
-                        viewModel.addTagToTask(item, tag: newTag)
-                        newTag = ""
+                    .onSubmit {
+                        addTag()
                     }
-                }) {
+                
+                Button(action: addTag) {
                     Text("Add")
                         .padding(.horizontal, 12)
                         .padding(.vertical, 6)
-                        .background(Color.blue)
+                        .background(newTag.isEmpty ? Color.gray : Color.blue)
                         .foregroundColor(.white)
                         .cornerRadius(6)
                 }
+                .disabled(newTag.isEmpty || item == nil)
             }
             
-            
-            Text("Suggestions")
-                .font(.subheadline)
-            
-            ScrollView(.horizontal, showsIndicators: false) {
+            if showAddedAnimation {
                 HStack {
-                    ForEach(viewModel.availableTags.filter { !item.tags.contains($0) }, id: \.self) { tag in
-                        Button(action: {
-                            viewModel.addTagToTask(item, tag: tag)
-                        }) {
-                            Text(tag)
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 5)
-                                .background(Color.gray.opacity(0.2))
-                                .cornerRadius(12)
-                                .foregroundColor(.primary)
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(.green)
+                    Text("Added tag: \"\(lastAddedTag)\"")
+                        .foregroundColor(.green)
+                }
+                .padding(.vertical, 4)
+                .transition(.opacity)
+                .onAppear {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        withAnimation {
+                            showAddedAnimation = false
                         }
                     }
                 }
             }
+            
+            Divider()
+            
+            Text("Suggested Tags")
+                .font(.headline)
+                .padding(.top, 8)
+            
+            if let currentItem = item, viewModel.availableTags.filter({ !currentItem.tags.contains($0) }).isEmpty {
+                Text("No more suggestions")
+                    .foregroundColor(.gray)
+                    .italic()
+                    .padding(.vertical, 8)
+            } else {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        if let currentItem = item {
+                            ForEach(viewModel.availableTags.filter { !currentItem.tags.contains($0) }, id: \.self) { tag in
+                                Button(action: {
+                                    withAnimation {
+                                        viewModel.addTagToTask(itemId, tag: tag)
+                                        lastAddedTag = tag
+                                        showAddedAnimation = true
+                                    }
+                                }) {
+                                    Text(tag)
+                                        .padding(.horizontal, 10)
+                                        .padding(.vertical, 5)
+                                        .background(Color.blue.opacity(0.2))
+                                        .cornerRadius(12)
+                                        .foregroundColor(.primary)
+                                }
+                                .buttonStyle(BorderlessButtonStyle())
+                            }
+                        }
+                    }
+                    .padding(.vertical, 4)
+                }
+            }
         }
         .padding()
+    }
+    
+    private func addTag() {
+        let trimmedTag = newTag.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmedTag.isEmpty {
+            withAnimation {
+                viewModel.addTagToTask(itemId, tag: trimmedTag)
+                lastAddedTag = trimmedTag
+                showAddedAnimation = true
+                newTag = ""
+            }
+        }
     }
 }
 
 struct TagView: View {
     let tag: String
     let onRemove: () -> Void
+    @State private var isPressed: Bool = false
     
     var body: some View {
         HStack(spacing: 4) {
@@ -321,11 +385,22 @@ struct TagView: View {
             Button(action: onRemove) {
                 Image(systemName: "xmark.circle.fill")
                     .font(.system(size: 12))
-                    .foregroundColor(.gray)
+                    .foregroundColor(.red)
             }
             .padding(.trailing, 8)
         }
-        .background(Color.blue.opacity(0.2))
+        .background(isPressed ? Color.red.opacity(0.2) : Color.blue.opacity(0.2))
         .cornerRadius(12)
+        .onTapGesture {
+            
+            withAnimation(.easeInOut(duration: 0.15)) {
+                isPressed = true
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                withAnimation {
+                    isPressed = false
+                }
+            }
+        }
     }
 }
