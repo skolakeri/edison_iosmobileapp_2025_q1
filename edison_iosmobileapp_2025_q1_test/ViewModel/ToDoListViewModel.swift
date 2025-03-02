@@ -35,6 +35,11 @@ class ToDoListViewModel: ObservableObject {
             }
         }
         
+        let uniqueIds = Set(result.map { $0.id })
+        result = uniqueIds.compactMap { id in
+            result.first { $0.id == id }
+        }
+        
         return result
     }
     
