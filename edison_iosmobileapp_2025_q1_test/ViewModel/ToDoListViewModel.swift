@@ -15,15 +15,18 @@ class ToDoListViewModel: ObservableObject {
     
     @Published var editingItemId: UUID?
     @Published var inputTask: String = ""
+    @Published var inputPriority: TaskPriority = .medium
     @Published var toDoItems: [ToDoItem] = [ToDoItem(title: "test")]
     
     func addItem() {
         if inputTask.isEmpty { return }
-        toDoItems.append(ToDoItem(title: inputTask))
+        toDoItems.append(ToDoItem(title: inputTask, priority: inputPriority))
         inputTask = ""
+        inputPriority = .medium
+        sortItems()
         repository.saveToDoItems(toDoItems)
-        
     }
+    
     func removeItem(_ item: ToDoItem) {
         if let index = toDoItems.firstIndex(where: { $0.id == item.id }) {
             toDoItems.remove(at: index)
@@ -43,8 +46,17 @@ class ToDoListViewModel: ObservableObject {
         }
     }
     
+    func updateItemPriority(_ item: ToDoItem, _ newPriority: TaskPriority) {
+        if let index = toDoItems.firstIndex(where: { $0.id == item.id }) {
+            toDoItems[index].priority = newPriority
+            sortItems()
+            repository.saveToDoItems(toDoItems)
+        }
+    }
+    
     func loadData() {
         toDoItems = repository.loadToDoItems()
+        sortItems()
     }
     
     func onSubmit() {
@@ -55,6 +67,16 @@ class ToDoListViewModel: ObservableObject {
     func onTapItem(_ item: ToDoItem) {
         editingItemId = item.id
         repository.saveToDoItems(toDoItems)
+    }
+    
+    private func sortItems() {
+        toDoItems.sort { item1, item2 in
+            if item1.isComplete != item2.isComplete {
+                return !item1.isComplete
+            }
+            
+            return item1.priority.sortOrder < item2.priority.sortOrder
+        }
     }
     
 }
