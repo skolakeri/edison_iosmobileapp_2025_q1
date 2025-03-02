@@ -8,7 +8,6 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
-            // Background gradient
             LinearGradient(
                 gradient: Gradient(colors: [.blue.opacity(0.1), .white]),
                 startPoint: .topLeading,
@@ -18,7 +17,6 @@ struct ContentView: View {
             
             NavigationStack {
                 VStack(spacing: 0) {
-                    // MARK: - Custom Header
                     VStack(spacing: 0) {
                         HStack(alignment: .center) {
                             VStack(alignment: .leading, spacing: 2) {
@@ -43,10 +41,9 @@ struct ContentView: View {
                         .padding(.top, 12)
                     }
                     
-                    // MARK: - Task Input
                     if isAddingTask {
                         VStack(spacing: 12) {
-                            // Task title field
+                            
                             HStack {
                                 Image(systemName: "pencil")
                                     .foregroundColor(.blue)
@@ -57,7 +54,7 @@ struct ContentView: View {
                             .background(Color(.systemGray6))
                             .cornerRadius(10)
                             
-                            // Priority selector
+                        
                             HStack {
                                 Text("Priority:")
                                     .font(.subheadline)
@@ -66,7 +63,9 @@ struct ContentView: View {
                                 
                                 ForEach(TaskPriority.allCases, id: \.self) { priority in
                                     Button(action: {
+                        
                                         viewModel.inputPriority = priority
+                                        
                                     }) {
                                         VStack {
                                             Circle()
@@ -85,7 +84,7 @@ struct ContentView: View {
                             }
                             .padding(.horizontal, 8)
                             
-                            // Action buttons
+                            
                             HStack {
                                 Button(action: {
                                     withAnimation(.spring()) {
@@ -148,7 +147,7 @@ struct ContentView: View {
                         .padding(.vertical, 8)
                     }
                     
-                    // MARK: - Toggle
+                    
                     HStack {
                         Toggle("Hide Completed Tasks", isOn: $viewModel.hideCompleted)
                             .onChange(of: viewModel.hideCompleted) {
@@ -159,14 +158,14 @@ struct ContentView: View {
                     .padding(.horizontal)
                     .padding(.vertical, 8)
                     
-                    // MARK: - Task List
+                    
                     if !viewModel.filteredItems.isEmpty {
                         List {
                             ForEach(viewModel.filteredItems, id: \.id) { item in
                                 VStack(alignment: .leading, spacing: 4) {
-                                    // Task content
+                                    
                                     VStack(alignment: .leading, spacing: 8) {
-                                        // Title row
+                                    
                                         HStack(alignment: .top) {
                                             Button(action: {
                                                 withAnimation(.spring()) {
@@ -209,7 +208,7 @@ struct ContentView: View {
                                                 .clipShape(Capsule())
                                         }
                                         
-                                        // Tags row
+                                        
                                         if !item.tags.isEmpty {
                                             ScrollView(.horizontal, showsIndicators: false) {
                                                 HStack(spacing: 6) {
@@ -227,7 +226,7 @@ struct ContentView: View {
                                             }
                                         }
                                         
-                                        // Notification date
+                                        
                                         if let notificationDate = item.notificationDate {
                                             HStack(spacing: 4) {
                                                 Image(systemName: "bell.fill")
@@ -248,11 +247,11 @@ struct ContentView: View {
                                             .shadow(color: Color(.systemGray4).opacity(0.5), radius: 2, x: 0, y: 1)
                                     )
                                     
-                                    // Action buttons
+                                    
                                     HStack(spacing: 12) {
                                         Spacer()
                                         
-                                        // Notification button
+                                        
                                         Button {
                                             withAnimation(.easeInOut(duration: 0.1)) {
                                                 if item.notificationDate != nil {
@@ -271,7 +270,7 @@ struct ContentView: View {
                                         }
                                         .buttonStyle(BorderlessButtonStyle())
                                         
-                                        // Tags button
+                                        
                                         Button {
                                             withAnimation(.easeInOut(duration: 0.1)) {
                                                 selectedItemForTags = item
@@ -283,7 +282,7 @@ struct ContentView: View {
                                         }
                                         .buttonStyle(BorderlessButtonStyle())
                                         
-                                        // Delete button
+                                        
                                         Button {
                                             withAnimation(.easeInOut) {
                                                 viewModel.removeItem(item)
@@ -343,7 +342,7 @@ struct ContentView: View {
                         }
                         .listStyle(PlainListStyle())
                     } else {
-                        // MARK: - Empty State
+                        
                         Spacer()
                         
                         VStack(spacing: 20) {
@@ -378,17 +377,29 @@ struct ContentView: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .sheet(item: $selectedItemForTags) { item in
                     NavigationView {
-                        TagManagementView(viewModel: viewModel, itemId: item.id)
-                            .navigationTitle("Manage Tags")
-                            .navigationBarItems(
-                                trailing: Button("Done") { selectedItemForTags = nil }
-                            )
+                        TagManagementView(
+                            viewModel: viewModel,
+                            itemId: item.id,
+                            onDismiss: { selectedItemForTags = nil }
+                        )
+                        .navigationTitle("Manage Tags")
+                        .navigationBarItems(
+                            trailing: Button("Done") { selectedItemForTags = nil }
+                        )
+                        .toolbar {
+                            ToolbarItem(placement: .confirmationAction) {
+                                Button("Done") {
+                                    selectedItemForTags = nil
+                                }
+                            }
+                        }
                     }
                 }
                 .sheet(item: $datePickerItem) { item in
                     NotificationDatePicker(item: item) { date in
                         if let date = date {
                             viewModel.setNotification(for: item, date: date)
+                            viewModel.sortItems()
                         }
                         datePickerItem = nil
                     }
@@ -445,6 +456,7 @@ struct NotificationDatePicker: View {
 struct TagManagementView: View {
     @ObservedObject var viewModel: ToDoListViewModel
     let itemId: UUID
+    let onDismiss: () -> Void
     @State private var newTag: String = ""
     @State private var showAddedAnimation: Bool = false
     @State private var lastAddedTag: String = ""
@@ -491,7 +503,7 @@ struct TagManagementView: View {
                                     .transition(.scale.combined(with: .opacity))
                                 }
                             }
-                            .id(currentItem.tags.hashValue) // Force refresh when tags change
+                            .id(currentItem.tags.hashValue)
                         } else {
                             Text("No tags yet")
                                 .italic()
@@ -503,7 +515,7 @@ struct TagManagementView: View {
                     
                     Divider()
                     
-                    // Add new tag section
+                    
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Add New Tag")
                             .font(.headline)
@@ -542,19 +554,19 @@ struct TagManagementView: View {
                     
                     Divider()
                     
-                    // Suggested tags section
+                    
                     VStack(alignment: .leading, spacing: 12) {
                         HStack {
                             Text("Suggested Tags")
                                 .font(.headline)
                             
-                            // Show count for debugging
+                            
                             Text("(\(viewModel.availableTags.count) available)")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
                         
-                        // Initialize default tags if none exist
+                
                         if viewModel.availableTags.isEmpty {
                             Button("Initialize Default Tags") {
                                 viewModel.availableTags = ["Work", "Personal", "Home", "Shopping", "Urgent", "Later"]
@@ -588,7 +600,7 @@ struct TagManagementView: View {
                                         .buttonStyle(BorderlessButtonStyle())
                                     }
                                 }
-                                .id(suggestions.hashValue) // Force refresh when suggestions change
+                                .id(suggestions.hashValue)
                             } else {
                                 Text("No suggestions available")
                                     .italic()
@@ -604,7 +616,10 @@ struct TagManagementView: View {
             
             Divider()
             
-            Button(action: { dismiss() }) {
+            Button(action: {
+                onDismiss()
+                dismiss()
+            }) {
                 Text("Done")
                     .fontWeight(.medium)
                     .foregroundColor(.white)
@@ -626,7 +641,7 @@ struct TagManagementView: View {
             }
         }
         .onAppear {
-            // Make sure we have some default tags if none exist
+            
             if viewModel.availableTags.isEmpty {
                 viewModel.availableTags = ["Work", "Personal", "Home", "Shopping", "Urgent", "Later"]
                 viewModel.objectWillChange.send()
