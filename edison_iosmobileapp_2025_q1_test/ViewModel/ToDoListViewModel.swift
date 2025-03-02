@@ -26,25 +26,22 @@ class ToDoListViewModel: ObservableObject {
     
     func addTagToTask(_ itemId: UUID, tag: String) {
         if let index = toDoItems.firstIndex(where: { $0.id == itemId }) {
-            
+            // Don't add if tag already exists or is empty
             let trimmedTag = tag.trimmingCharacters(in: .whitespacesAndNewlines)
             if trimmedTag.isEmpty || toDoItems[index].tags.contains(trimmedTag) {
                 return
             }
             
+            // Add tag to item
+            toDoItems[index].tags.append(trimmedTag)
             
-            var updatedTags = toDoItems[index].tags
-            updatedTags.append(trimmedTag)
-            toDoItems[index].tags = updatedTags
-            
-            
+            // Add to available tags if it's new
             if !availableTags.contains(trimmedTag) {
                 availableTags.append(trimmedTag)
+                availableTags.sort() // Keep them sorted
             }
             
-            
             objectWillChange.send()
-            
             repository.saveToDoItems(toDoItems)
         }
     }
