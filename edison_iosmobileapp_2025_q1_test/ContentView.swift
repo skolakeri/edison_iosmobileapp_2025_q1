@@ -3,6 +3,8 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var viewModel = ToDoListViewModel()
     @State private var selectedItemForTags: ToDoItem? = nil
+    @State private var datePickerItem: ToDoItem? = nil
+    @State private var isAddingTask: Bool = false
     
     var body: some View {
         ZStack {
@@ -13,45 +15,137 @@ struct ContentView: View {
             )
             .ignoresSafeArea()
             
-            NavigationStack{
-                VStack {
-                    
-                    VStack(spacing: 10) {
-                        TextField("Input task", text: $viewModel.inputTask)
-                            .padding(8)
-                            .background(Color(.systemGray6))
-                            .cornerRadius(8)
-                        
-                        HStack {
-                            Text("Priority:")
-                            Picker("Priority", selection: $viewModel.inputPriority) {
-                                ForEach(TaskPriority.allCases, id: \.self) { priority in
-                                    Label(
-                                        priority.rawValue,
-                                        systemImage: priority.icon
-                                    )
-                                    .foregroundColor(priority.color)
-                                    .tag(priority)
+            NavigationStack {
+                VStack(spacing: 0) {
+                    VStack(spacing: 0) {
+                        HStack(alignment: .center) {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("My Tasks")
+                                    .font(.largeTitle)
+                                    .fontWeight(.bold)
+                                
+                                HStack {
+                                    Text("\(viewModel.toDoItems.filter { !$0.isComplete }.count) remaining")
+                                        .foregroundColor(.blue)
+                                    Text("•")
+                                    Text("\(viewModel.toDoItems.filter { $0.isComplete }.count) completed")
+                                        .foregroundColor(.green)
                                 }
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
                             }
-                            .pickerStyle(MenuPickerStyle())
                             
                             Spacer()
-                            
-                            Button("Add") {
-                                viewModel.addItem()
-                            }
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 6)
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(6)
                         }
+                        .padding(.horizontal)
+                        .padding(.top, 12)
                     }
-                    .padding()
-                    .background(Color.blue.opacity(0.1))
-                    .cornerRadius(10)
-                    .padding(.horizontal)
+                    
+
+                    if isAddingTask {
+                        VStack(spacing: 12) {
+                            
+                            HStack {
+                                Image(systemName: "pencil")
+                                    .foregroundColor(.blue)
+                                TextField("Task title", text: $viewModel.inputTask)
+                                    .font(.body)
+                            }
+                            .padding()
+                            .background(Color(.systemGray6))
+                            .cornerRadius(10)
+                            
+                            
+                            HStack {
+                                Text("Priority:")
+                                    .font(.subheadline)
+                                
+                                Spacer()
+                                
+                                ForEach(TaskPriority.allCases, id: \.self) { priority in
+                                    Button(action: {
+                                        viewModel.inputPriority = priority
+                                    }) {
+                                        VStack {
+                                            Circle()
+                                                .fill(priority.color)
+                                                .frame(width: 16, height: 16)
+                                            Text(priority.rawValue)
+                                                .font(.caption)
+                                        }
+                                        .padding(8)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .stroke(viewModel.inputPriority == priority ? priority.color : Color.clear, lineWidth: 2)
+                                        )
+                                    }
+                                }
+                            }
+                            .padding(.horizontal, 8)
+                            
+                            
+                            HStack {
+                                Button(action: {
+                                    withAnimation(.spring()) {
+                                        isAddingTask = false
+                                    }
+                                }) {
+                                    Text("Cancel")
+                                        .foregroundColor(.red)
+                                        .padding(.vertical, 8)
+                                        .padding(.horizontal, 16)
+                                        .background(Color.red.opacity(0.1))
+                                        .cornerRadius(8)
+                                }
+                                
+                                Spacer()
+                                
+                                Button(action: {
+                                    viewModel.addItem()
+                                    withAnimation {
+                                        isAddingTask = false
+                                    }
+                                }) {
+                                    Text("Add Task")
+                                        .foregroundColor(.white)
+                                        .padding(.vertical, 8)
+                                        .padding(.horizontal, 16)
+                                        .background(Color.blue)
+                                        .cornerRadius(8)
+                                }
+                                .disabled(viewModel.inputTask.isEmpty)
+                                .opacity(viewModel.inputTask.isEmpty ? 0.6 : 1)
+                            }
+                        }
+                        .padding()
+                        .background(Color.white)
+                        .cornerRadius(16)
+                        .shadow(color: Color.gray.opacity(0.2), radius: 3, x: 0, y: 2)
+                        .padding(.horizontal)
+                        .padding(.vertical, 8)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                    } else {
+                        Button(action: {
+                            withAnimation(.spring()) {
+                                isAddingTask = true
+                            }
+                        }) {
+                            HStack {
+                                Image(systemName: "plus.circle.fill")
+                                    .font(.title2)
+                                Text("Add New Task")
+                                    .fontWeight(.medium)
+                            }
+                            .foregroundColor(.blue)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.blue.opacity(0.1))
+                            .cornerRadius(12)
+                        }
+                        .padding(.horizontal)
+                        .padding(.vertical, 8)
+                    }
+                    
                     
                     HStack {
                         Toggle("Hide Completed Tasks", isOn: $viewModel.hideCompleted)
@@ -63,197 +157,215 @@ struct ContentView: View {
                     .padding(.horizontal)
                     .padding(.vertical, 8)
                     
-                    List {
-                        ForEach(viewModel.filteredItems, id: \.id) { item in
-                            VStack(alignment: .leading, spacing: 4) {
-                                
-                                VStack(alignment: .leading, spacing: 8) {
+                    
+                    if !viewModel.filteredItems.isEmpty {
+                        List {
+                            ForEach(viewModel.filteredItems, id: \.id) { item in
+                                VStack(alignment: .leading, spacing: 4) {
                                     
-                                    HStack(alignment: .top) {
+                                    VStack(alignment: .leading, spacing: 8) {
                                         
-                                        Button(action: {
-                                            withAnimation(.spring()) {
-                                                viewModel.toggleItem(item)
+                                        HStack(alignment: .top) {
+                                            Button(action: {
+                                                withAnimation(.spring()) {
+                                                    viewModel.toggleItem(item)
+                                                }
+                                            }) {
+                                                Image(systemName: item.isComplete ? "checkmark.circle.fill" : "circle")
+                                                    .font(.system(size: 22))
+                                                    .foregroundColor(item.isComplete ? .green : .gray)
                                             }
-                                        }) {
-                                            Image(systemName: item.isComplete ? "checkmark.circle.fill" : "circle")
-                                                .font(.system(size: 22))
-                                                .foregroundColor(item.isComplete ? .green : .gray)
-                                        }
-                                        
-                                        
-                                        if viewModel.editingItemId == item.id {
-                                            TextField("", text: Binding(
-                                                get: { item.title },
-                                                set: { viewModel.updateItemText(item, $0) }
-                                            ))
-                                            .onSubmit { viewModel.onSubmit() }
-                                            .font(.system(size: 17, weight: .medium))
-                                        } else {
-                                            Text(item.title)
+                                            
+                                            if viewModel.editingItemId == item.id {
+                                                TextField("", text: Binding(
+                                                    get: { item.title },
+                                                    set: { viewModel.updateItemText(item, $0) }
+                                                ))
+                                                .onSubmit { viewModel.onSubmit() }
                                                 .font(.system(size: 17, weight: .medium))
-                                                .strikethrough(item.isComplete)
-                                                .foregroundColor(item.isComplete ? .gray : .primary)
-                                                .onTapGesture { viewModel.onTapItem(item) }
+                                            } else {
+                                                Text(item.title)
+                                                    .font(.system(size: 17, weight: .medium))
+                                                    .strikethrough(item.isComplete)
+                                                    .foregroundColor(item.isComplete ? .gray : .primary)
+                                                    .onTapGesture { viewModel.onTapItem(item) }
+                                            }
+                                            
+                                            Spacer()
+                                            
+                                            Text(item.priority.rawValue)
+                                                .font(.caption)
+                                                .padding(.horizontal, 8)
+                                                .padding(.vertical, 2)
+                                                .background(item.priority.color.opacity(0.2))
+                                                .foregroundColor(item.priority.color)
+                                                .clipShape(Capsule())
                                         }
                                         
+                                        
+                                        if !item.tags.isEmpty {
+                                            ScrollView(.horizontal, showsIndicators: false) {
+                                                HStack(spacing: 6) {
+                                                    ForEach(item.tags, id: \.self) { tag in
+                                                        Text(tag)
+                                                            .font(.caption)
+                                                            .padding(.horizontal, 8)
+                                                            .padding(.vertical, 3)
+                                                            .background(tagColor(for: tag))
+                                                            .foregroundColor(.white)
+                                                            .clipShape(Capsule())
+                                                    }
+                                                }
+                                                .id(item.tags.hashValue)
+                                            }
+                                        }
+                                        
+                                        
+                                        if let notificationDate = item.notificationDate {
+                                            HStack(spacing: 4) {
+                                                Image(systemName: "bell.fill")
+                                                    .font(.system(size: 12))
+                                                    .foregroundColor(.blue)
+                                                
+                                                Text(formatDate(notificationDate))
+                                                    .font(.caption)
+                                                    .foregroundColor(.blue)
+                                            }
+                                        }
+                                    }
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 10)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .fill(Color.white)
+                                            .shadow(color: Color(.systemGray4).opacity(0.5), radius: 2, x: 0, y: 1)
+                                    )
+                                    
+                                
+                                    HStack(spacing: 12) {
                                         Spacer()
                                         
                                         
-                                        Text(item.priority.rawValue)
-                                            .font(.caption)
-                                            .padding(.horizontal, 8)
-                                            .padding(.vertical, 2)
-                                            .background(item.priority.color.opacity(0.2))
-                                            .foregroundColor(item.priority.color)
-                                            .clipShape(Capsule())
-                                    }
-                                    
-                                    
-                                    if !item.tags.isEmpty {
-                                        ScrollView(.horizontal, showsIndicators: false) {
-                                            HStack(spacing: 6) {
-                                                ForEach(item.tags, id: \.self) { tag in
-                                                    Text(tag)
-                                                        .font(.caption)
-                                                        .padding(.horizontal, 8)
-                                                        .padding(.vertical, 3)
-                                                        .background(tagColor(for: tag))
-                                                        .foregroundColor(.white)
-                                                        .clipShape(Capsule())
-                                                }
+                                        Button {
+                                            if item.notificationDate != nil {
+                                                viewModel.setNotification(for: item, date: nil)
+                                            } else {
+                                                showDatePicker(for: item)
                                             }
+                                        } label: {
+                                            Label(
+                                                item.notificationDate != nil ? "Remove Reminder" : "Add Reminder",
+                                                systemImage: item.notificationDate != nil ? "bell.slash" : "bell"
+                                            )
+                                            .font(.caption)
+                                            .foregroundColor(item.notificationDate != nil ? .red.opacity(0.8) : .blue)
                                         }
-                                    }
-                                    
-                                   
-                                    if let notificationDate = item.notificationDate {
-                                        HStack(spacing: 4) {
-                                            Image(systemName: "bell.fill")
-                                                .font(.system(size: 12))
-                                                .foregroundColor(.blue)
-                                            
-                                            Text(formatDate(notificationDate))
+                                        
+                                        
+                                        Button {
+                                            selectedItemForTags = item
+                                        } label: {
+                                            Label("Tags", systemImage: "tag")
                                                 .font(.caption)
                                                 .foregroundColor(.blue)
                                         }
-                                    }
-                                }
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 10)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .fill(Color.white)
-                                        .shadow(color: Color(.systemGray4).opacity(0.5), radius: 2, x: 0, y: 1)
-                                )
-                                
-                                
-                                HStack(spacing: 12) {
-                                    Spacer()
-                                    
-                                    
-                                    Button {
-                                        if item.notificationDate != nil {
-                                            viewModel.setNotification(for: item, date: nil)
-                                        } else {
-                                            showDatePicker(for: item)
+                                        
+                                        
+                                        Button {
+                                            withAnimation(.easeInOut) {
+                                                viewModel.removeItem(item)
+                                            }
+                                        } label: {
+                                            Label("Delete", systemImage: "trash")
+                                                .font(.caption)
+                                                .foregroundColor(.red)
                                         }
-                                    } label: {
+                                    }
+                                    .padding(.horizontal, 12)
+                                    .padding(.top, 4)
+                                }
+                                .padding(.vertical, 8)
+                                .padding(.horizontal, 6)
+                                .contentShape(Rectangle())
+                                .contextMenu {
+                                    Button(action: { viewModel.toggleItem(item) }) {
                                         Label(
-                                            item.notificationDate != nil ? "Remove Reminder" : "Add Reminder",
-                                            systemImage: item.notificationDate != nil ? "bell.slash" : "bell"
+                                            item.isComplete ? "Mark as Incomplete" : "Mark as Complete",
+                                            systemImage: item.isComplete ? "circle" : "checkmark.circle"
                                         )
-                                        .font(.caption)
-                                        .foregroundColor(item.notificationDate != nil ? .red.opacity(0.8) : .blue)
                                     }
                                     
-                                    
-                                    Button {
-                                        selectedItemForTags = item
-                                    } label: {
-                                        Label("Tags", systemImage: "tag")
-                                            .font(.caption)
-                                            .foregroundColor(.blue)
+                                    Button(action: { selectedItemForTags = item }) {
+                                        Label("Manage Tags", systemImage: "tag")
                                     }
                                     
-                                    
-                                    Button {
-                                        withAnimation(.easeInOut) {
-                                            viewModel.removeItem(item)
+                                    if !item.isComplete {
+                                        Button(action: { showDatePicker(for: item) }) {
+                                            Label("Set Reminder", systemImage: "bell")
                                         }
-                                    } label: {
+                                    }
+                                    
+                                    Button(role: .destructive, action: { viewModel.removeItem(item) }) {
                                         Label("Delete", systemImage: "trash")
-                                            .font(.caption)
-                                            .foregroundColor(.red)
                                     }
-                                }
-                                .padding(.horizontal, 12)
-                                .padding(.top, 4)
-                            }
-                            .padding(.vertical, 8)
-                            .padding(.horizontal, 6)
-                            .contentShape(Rectangle())
-                            .contextMenu {
-                                Button(action: { viewModel.toggleItem(item) }) {
-                                    Label(
-                                        item.isComplete ? "Mark as Incomplete" : "Mark as Complete",
-                                        systemImage: item.isComplete ? "circle" : "checkmark.circle"
-                                    )
-                                }
-                                
-                                Button(action: { selectedItemForTags = item }) {
-                                    Label("Manage Tags", systemImage: "tag")
-                                }
-                                
-                                if !item.isComplete {
-                                    Button(action: { showDatePicker(for: item) }) {
-                                        Label("Set Reminder", systemImage: "bell")
-                                    }
-                                }
-                                
-                                Button(role: .destructive, action: { viewModel.removeItem(item) }) {
-                                    Label("Delete", systemImage: "trash")
                                 }
                             }
                         }
+                        .listStyle(PlainListStyle())
+                    } else {
                         
-                    }
-                    if viewModel.filteredItems.isEmpty && !viewModel.searchQuery.isEmpty {
+                        Spacer()
+                        
                         VStack(spacing: 20) {
-                            Image(systemName: "magnifyingglass")
-                                .font(.system(size: 40))
-                                .foregroundColor(.gray)
+                            Image(systemName: viewModel.searchQuery.isEmpty ? "checkmark.circle" : "magnifyingglass")
+                                .font(.system(size: 60))
+                                .foregroundColor(.blue.opacity(0.7))
                             
-                            Text("No tasks match your search")
-                                .font(.headline)
-                                .foregroundColor(.gray)
+                            Text(viewModel.searchQuery.isEmpty ?
+                                "No tasks yet" :
+                                "No matches found")
+                                .font(.title2)
+                                .fontWeight(.medium)
+                            
+                            Text(viewModel.searchQuery.isEmpty ?
+                                "Tap the + button to add your first task" :
+                                "Try a different search term")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                                .multilineTextAlignment(.center)
+                                .padding(.horizontal)
                         }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Color(.systemBackground))
+                        .padding(.bottom, 40)
+                        
+                        Spacer()
                     }
+                }
+                .onAppear {
+                    viewModel.loadData()
+                    viewModel.requestNotificationPermission()
+                }
+                .searchable(text: $viewModel.searchQuery, prompt: "Search tasks")
+                .toolbar(.hidden, for: .navigationBar)
+                .sheet(item: $selectedItemForTags) { item in
+                    NavigationView {
+                        TagManagementView(viewModel: viewModel, itemId: item.id)
+                            .navigationTitle("Manage Tags")
+                            .navigationBarItems(
+                                trailing: Button("Done") { selectedItemForTags = nil }
+                            )
+                    }
+                }
+                .sheet(item: $datePickerItem) { item in
+                    NotificationDatePicker(item: item) { date in
+                        if let date = date {
+                            viewModel.setNotification(for: item, date: date)
+                        }
+                        datePickerItem = nil
+                    }
+                }
             }
-        
         }
-        .onAppear {
-            viewModel.loadData()
-            viewModel.requestNotificationPermission()
-        }
-        .navigationTitle("ToDo List")
-        .searchable(text: $viewModel.searchQuery, prompt: "Search tasks")
-        .sheet(item: $selectedItemForTags) { item in
-            NavigationView {
-                TagManagementView(viewModel: viewModel, itemId: item.id)
-                    .navigationTitle("Manage Tags")
-                    .navigationBarItems(
-                        trailing: Button("Done") { selectedItemForTags = nil }
-                    )
-            }
-        }
-        
     }
-    
-    
-    @State private var datePickerItem: ToDoItem? = nil
     
     private func showDatePicker(for item: ToDoItem) {
         datePickerItem = item
@@ -265,8 +377,12 @@ struct ContentView: View {
         formatter.timeStyle = .short
         return formatter.string(from: date)
     }
-        }
-            
+    
+    private func tagColor(for tag: String) -> Color {
+        let colors: [Color] = [.blue, .green, .orange, .purple, .pink]
+        let hash = abs(tag.hashValue)
+        return colors[hash % colors.count]
+    }
 }
 
 struct NotificationDatePicker: View {
@@ -306,6 +422,12 @@ struct TagManagementView: View {
     
     private var item: ToDoItem? {
         viewModel.toDoItems.first(where: { $0.id == itemId })
+    }
+    
+    private func tagColor(for tag: String) -> Color {
+        let colors: [Color] = [.blue, .green, .orange, .purple, .pink]
+        let hash = abs(tag.hashValue)
+        return colors[hash % colors.count]
     }
     
     var body: some View {
@@ -446,8 +568,8 @@ struct TagManagementView: View {
                     .padding(.vertical, 8)
             }
         }
-        .onChange(of: showAddedAnimation) { newValue in
-            if newValue {
+        .onChange(of: showAddedAnimation) {
+            if showAddedAnimation {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                     withAnimation {
                         showAddedAnimation = false
