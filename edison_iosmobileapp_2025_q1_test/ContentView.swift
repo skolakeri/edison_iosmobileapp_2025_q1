@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var viewModel = ToDoListViewModel()
+    @State private var selectedItemForTags: ToDoItem? = nil
     
     var body: some View {
             NavigationStack{
@@ -128,6 +129,34 @@ struct ContentView: View {
                                     }
                                     .padding(.leading, 30)
                                 }
+                                
+                                // Tags section
+                                if !item.tags.isEmpty {
+                                    ScrollView(.horizontal, showsIndicators: false) {
+                                        HStack {
+                                            ForEach(item.tags, id: \.self) { tag in
+                                                Text(tag)
+                                                    .font(.caption)
+                                                    .padding(.horizontal, 8)
+                                                    .padding(.vertical, 2)
+                                                    .background(Color.blue.opacity(0.2))
+                                                    .cornerRadius(10)
+                                                    .foregroundColor(.primary)
+                                            }
+                                        }
+                                    }
+                                    .padding(.leading, 30)
+                                }
+
+                                // Add tag button
+                                Button {
+                                    selectedItemForTags = item
+                                } label: {
+                                    Label("Manage Tags", systemImage: "tag")
+                                        .font(.caption)
+                                        .foregroundColor(.blue)
+                                }
+                                .padding(.leading, 30)
                             }
                             .padding(.vertical, 4)
                         }
@@ -145,6 +174,7 @@ struct ContentView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .background(Color(.systemBackground))
                     }
+                    
             }
         
         }
@@ -154,12 +184,13 @@ struct ContentView: View {
         }
         .navigationTitle("ToDo List")
         .searchable(text: $viewModel.searchQuery, prompt: "Search tasks")
-        .sheet(item: $datePickerItem) { item in
-            NotificationDatePicker(item: item) { date in
-                if let date = date {
-                    viewModel.setNotification(for: item, date: date)
-                }
-                datePickerItem = nil
+        .sheet(item: $selectedItemForTags) { item in
+            NavigationView {
+                TagManagementView(viewModel: viewModel, item: item)
+                    .navigationTitle("Manage Tags")
+                    .navigationBarItems(
+                        trailing: Button("Done") { selectedItemForTags = nil }
+                    )
             }
         }
         
@@ -204,5 +235,97 @@ struct NotificationDatePicker: View {
                 trailing: Button("Save") { onSave(selectedDate) }
             )
         }
+    }
+}
+
+struct TagManagementView: View {
+    @ObservedObject var viewModel: ToDoListViewModel
+    let item: ToDoItem
+    @State private var newTag: String = ""
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Tags")
+                .font(.headline)
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack {
+                    ForEach(item.tags, id: \.self) { tag in
+                        TagView(tag: tag) {
+                            viewModel.removeTagFromTask(item, tag: tag)
+                        }
+                    }
+                }
+                .padding(.vertical, 4)
+            }
+            
+            Divider()
+            
+            
+            HStack {
+                TextField("Add tag", text: $newTag)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                
+                Button(action: {
+                    if !newTag.isEmpty {
+                        viewModel.addTagToTask(item, tag: newTag)
+                        newTag = ""
+                    }
+                }) {
+                    Text("Add")
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(6)
+                }
+            }
+            
+            
+            Text("Suggestions")
+                .font(.subheadline)
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack {
+                    ForEach(viewModel.availableTags.filter { !item.tags.contains($0) }, id: \.self) { tag in
+                        Button(action: {
+                            viewModel.addTagToTask(item, tag: tag)
+                        }) {
+                            Text(tag)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 5)
+                                .background(Color.gray.opacity(0.2))
+                                .cornerRadius(12)
+                                .foregroundColor(.primary)
+                        }
+                    }
+                }
+            }
+        }
+        .padding()
+    }
+}
+
+struct TagView: View {
+    let tag: String
+    let onRemove: () -> Void
+    
+    var body: some View {
+        HStack(spacing: 4) {
+            Text(tag)
+                .font(.caption)
+                .padding(.leading, 8)
+                .padding(.trailing, 0)
+                .padding(.vertical, 4)
+            
+            Button(action: onRemove) {
+                Image(systemName: "xmark.circle.fill")
+                    .font(.system(size: 12))
+                    .foregroundColor(.gray)
+            }
+            .padding(.trailing, 8)
+        }
+        .background(Color.blue.opacity(0.2))
+        .cornerRadius(12)
     }
 }

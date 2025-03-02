@@ -44,7 +44,8 @@ struct ToDoItem: Identifiable, Codable {
     var isComplete: Bool = false
     var priority: TaskPriority = .medium
     var notificationId: String? = nil
-    var notificationDate: Date? = nil 
+    var notificationDate: Date? = nil
+    var tags: [String] = []
 }
 
 

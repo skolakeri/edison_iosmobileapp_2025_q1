@@ -21,6 +21,32 @@ class ToDoListViewModel: ObservableObject {
     @Published var hideCompleted: Bool = false
     @Published var hasNotificationPermission: Bool = false
     @Published var searchQuery: String = ""
+    @Published var availableTags: [String] = ["Work", "Personal", "Home", "Shopping", "Urgent", "Later"]
+    @Published var tagInput: String = ""
+    
+    func addTagToTask(_ item: ToDoItem, tag: String) {
+        if let index = toDoItems.firstIndex(where: { $0.id == item.id }) {
+            let trimmedTag = tag.trimmingCharacters(in: .whitespacesAndNewlines)
+            if trimmedTag.isEmpty || toDoItems[index].tags.contains(trimmedTag) {
+                return
+            }
+            
+            toDoItems[index].tags.append(trimmedTag)
+            
+            if !availableTags.contains(trimmedTag) {
+                availableTags.append(trimmedTag)
+            }
+            
+            repository.saveToDoItems(toDoItems)
+        }
+    }
+    
+    func removeTagFromTask(_ item: ToDoItem, tag: String) {
+        if let index = toDoItems.firstIndex(where: { $0.id == item.id }) {
+            toDoItems[index].tags.removeAll { $0 == tag }
+            repository.saveToDoItems(toDoItems)
+        }
+    }
     
     var filteredItems: [ToDoItem] {
         var result = toDoItems
