@@ -53,61 +53,142 @@ struct ContentView: View {
             }
             .padding(.horizontal)
             
-            
             List {
-                ForEach(viewModel.filteredItems) { item in
-                    HStack {
+                ForEach(viewModel.filteredItems, id: \.id) { item in
+                    VStack(alignment: .leading, spacing: 4) {
                         
-                        Image(systemName: item.isComplete ? "checkmark.circle.fill" : "circle")
-                            .onTapGesture {
-                                viewModel.toggleItem(item)
+                        HStack {
+                            Image(systemName: item.isComplete ? "checkmark.circle.fill" : "circle")
+                                .onTapGesture {
+                                    viewModel.toggleItem(item)
+                                }
+                            
+                            if viewModel.editingItemId == item.id {
+                                TextField("", text: Binding(
+                                    get: { item.title },
+                                    set: { viewModel.updateItemText(item, $0) }
+                                ))
+                                .onSubmit { viewModel.onSubmit() }
+                            } else {
+                                Text(item.title)
+                                    .strikethrough(item.isComplete)
+                                    .onTapGesture { viewModel.onTapItem(item) }
                             }
-                        
-                        
-                        if viewModel.editingItemId == item.id {
-                            TextField("", text: Binding(
-                                get: { item.title },
-                                set: { viewModel.updateItemText(item, $0) }
-                            ))
-                            .onSubmit { viewModel.onSubmit() }
-                        } else {
-                            Text(item.title)
-                                .strikethrough(item.isComplete)
-                                .onTapGesture { viewModel.onTapItem(item) }
+                            
+                            Image(systemName: item.priority.icon)
+                                .foregroundColor(item.priority.color)
+                            
+                            Spacer()
+                            
+                            Menu {
+                                ForEach(TaskPriority.allCases, id: \.self) { priority in
+                                    Button(action: { viewModel.updateItemPriority(item, priority) }) {
+                                        Label(priority.rawValue, systemImage: priority.icon)
+                                    }
+                                }
+                            } label: {
+                                Image(systemName: "flag")
+                            }
+                            
+                            Button {
+                                viewModel.removeItem(item)
+                            } label: {
+                                Image(systemName: "minus.circle")
+                            }
+                            .buttonStyle(BorderlessButtonStyle())
                         }
                         
                         
-                        Image(systemName: item.priority.icon)
-                            .foregroundColor(item.priority.color)
-                        
-                        Spacer()
-                        
-                        
-                        Menu {
-                            ForEach(TaskPriority.allCases, id: \.self) { priority in
-                                Button(action: { viewModel.updateItemPriority(item, priority) }) {
-                                    Label(priority.rawValue, systemImage: priority.icon)
+                        if !item.isComplete {
+                            HStack {
+                                if let notificationDate = item.notificationDate {
+                                    Label(formatDate(notificationDate), systemImage: "bell.fill")
+                                        .font(.caption)
+                                        .foregroundColor(.blue)
+                                    
+                                    Spacer()
+                                    
+                                    Button {
+                                        viewModel.setNotification(for: item, date: nil)
+                                    } label: {
+                                        Image(systemName: "bell.slash")
+                                            .font(.caption)
+                                    }
+                                } else {
+                                    Button {
+                                        showDatePicker(for: item)
+                                    } label: {
+                                        Label("Set Reminder", systemImage: "bell")
+                                            .font(.caption)
+                                            .foregroundColor(.blue)
+                                    }
+                                    .disabled(!viewModel.hasNotificationPermission)
                                 }
                             }
-                        } label: {
-                            Image(systemName: "flag")
+                            .padding(.leading, 30)
                         }
-                        
-                        
-                        Button {
-                            viewModel.removeItem(item)
-                        } label: {
-                            Image(systemName: "minus.circle")
-                        }
-                        .buttonStyle(BorderlessButtonStyle())
                     }
+                    .padding(.vertical, 4)
                 }
             }
             
+            
+            
             Spacer()
         }
-        .onAppear() {
+        .onAppear {
             viewModel.loadData()
+            viewModel.requestNotificationPermission()
+        }
+        .sheet(item: $datePickerItem) { item in
+            NotificationDatePicker(item: item) { date in
+                if let date = date {
+                    viewModel.setNotification(for: item, date: date)
+                }
+                datePickerItem = nil
+            }
+        }
+        
+    }
+    
+    
+    @State private var datePickerItem: ToDoItem? = nil
+    
+    private func showDatePicker(for item: ToDoItem) {
+        datePickerItem = item
+    }
+    
+    private func formatDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .short
+        return formatter.string(from: date)
+    }
+}
+
+struct NotificationDatePicker: View {
+    let item: ToDoItem
+    let onSave: (Date?) -> Void
+    
+    @State private var selectedDate = Date().addingTimeInterval(3600)
+    @Environment(\.dismiss) private var dismiss
+    
+    var body: some View {
+        NavigationView {
+            VStack {
+                DatePicker("Select reminder time", selection: $selectedDate, displayedComponents: [.date, .hourAndMinute])
+                    .datePickerStyle(GraphicalDatePickerStyle())
+                    .padding()
+                
+                Text("Reminder for: \(item.title)")
+                    .font(.headline)
+                    .padding()
+            }
+            .navigationTitle("Set Reminder")
+            .navigationBarItems(
+                leading: Button("Cancel") { dismiss() },
+                trailing: Button("Save") { onSave(selectedDate) }
+            )
         }
     }
 }
