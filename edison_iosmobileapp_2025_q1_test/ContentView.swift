@@ -5,6 +5,14 @@ struct ContentView: View {
     @State private var selectedItemForTags: ToDoItem? = nil
     
     var body: some View {
+        ZStack {
+            LinearGradient(
+                gradient: Gradient(colors: [.blue.opacity(0.1), .white]),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .ignoresSafeArea()
+            
             NavigationStack{
                 VStack {
                     
@@ -59,108 +67,156 @@ struct ContentView: View {
                         ForEach(viewModel.filteredItems, id: \.id) { item in
                             VStack(alignment: .leading, spacing: 4) {
                                 
-                                HStack {
-                                    Image(systemName: item.isComplete ? "checkmark.circle.fill" : "circle")
-                                        .onTapGesture {
-                                            viewModel.toggleItem(item)
-                                        }
+                                VStack(alignment: .leading, spacing: 8) {
                                     
-                                    if viewModel.editingItemId == item.id {
-                                        TextField("", text: Binding(
-                                            get: { item.title },
-                                            set: { viewModel.updateItemText(item, $0) }
-                                        ))
-                                        .onSubmit { viewModel.onSubmit() }
-                                    } else {
-                                        Text(item.title)
-                                            .strikethrough(item.isComplete)
-                                            .onTapGesture { viewModel.onTapItem(item) }
+                                    HStack(alignment: .top) {
+                                        
+                                        Button(action: {
+                                            withAnimation(.spring()) {
+                                                viewModel.toggleItem(item)
+                                            }
+                                        }) {
+                                            Image(systemName: item.isComplete ? "checkmark.circle.fill" : "circle")
+                                                .font(.system(size: 22))
+                                                .foregroundColor(item.isComplete ? .green : .gray)
+                                        }
+                                        
+                                        
+                                        if viewModel.editingItemId == item.id {
+                                            TextField("", text: Binding(
+                                                get: { item.title },
+                                                set: { viewModel.updateItemText(item, $0) }
+                                            ))
+                                            .onSubmit { viewModel.onSubmit() }
+                                            .font(.system(size: 17, weight: .medium))
+                                        } else {
+                                            Text(item.title)
+                                                .font(.system(size: 17, weight: .medium))
+                                                .strikethrough(item.isComplete)
+                                                .foregroundColor(item.isComplete ? .gray : .primary)
+                                                .onTapGesture { viewModel.onTapItem(item) }
+                                        }
+                                        
+                                        Spacer()
+                                        
+                                        
+                                        Text(item.priority.rawValue)
+                                            .font(.caption)
+                                            .padding(.horizontal, 8)
+                                            .padding(.vertical, 2)
+                                            .background(item.priority.color.opacity(0.2))
+                                            .foregroundColor(item.priority.color)
+                                            .clipShape(Capsule())
                                     }
                                     
-                                    Image(systemName: item.priority.icon)
-                                        .foregroundColor(item.priority.color)
                                     
-                                    Spacer()
-                                    
-                                    Menu {
-                                        ForEach(TaskPriority.allCases, id: \.self) { priority in
-                                            Button(action: { viewModel.updateItemPriority(item, priority) }) {
-                                                Label(priority.rawValue, systemImage: priority.icon)
+                                    if !item.tags.isEmpty {
+                                        ScrollView(.horizontal, showsIndicators: false) {
+                                            HStack(spacing: 6) {
+                                                ForEach(item.tags, id: \.self) { tag in
+                                                    Text(tag)
+                                                        .font(.caption)
+                                                        .padding(.horizontal, 8)
+                                                        .padding(.vertical, 3)
+                                                        .background(tagColor(for: tag))
+                                                        .foregroundColor(.white)
+                                                        .clipShape(Capsule())
+                                                }
                                             }
                                         }
-                                    } label: {
-                                        Image(systemName: "flag")
                                     }
                                     
-                                    Button {
-                                        viewModel.removeItem(item)
-                                    } label: {
-                                        Image(systemName: "minus.circle")
-                                    }
-                                    .buttonStyle(BorderlessButtonStyle())
-                                }
-                                
-                                
-                                if !item.isComplete {
-                                    HStack {
-                                        if let notificationDate = item.notificationDate {
-                                            Label(formatDate(notificationDate), systemImage: "bell.fill")
-                                                .font(.caption)
+                                   
+                                    if let notificationDate = item.notificationDate {
+                                        HStack(spacing: 4) {
+                                            Image(systemName: "bell.fill")
+                                                .font(.system(size: 12))
                                                 .foregroundColor(.blue)
                                             
-                                            Spacer()
-                                            
-                                            Button {
-                                                viewModel.setNotification(for: item, date: nil)
-                                            } label: {
-                                                Image(systemName: "bell.slash")
-                                                    .font(.caption)
-                                            }
+                                            Text(formatDate(notificationDate))
+                                                .font(.caption)
+                                                .foregroundColor(.blue)
+                                        }
+                                    }
+                                }
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 10)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(Color.white)
+                                        .shadow(color: Color(.systemGray4).opacity(0.5), radius: 2, x: 0, y: 1)
+                                )
+                                
+                                
+                                HStack(spacing: 12) {
+                                    Spacer()
+                                    
+                                    
+                                    Button {
+                                        if item.notificationDate != nil {
+                                            viewModel.setNotification(for: item, date: nil)
                                         } else {
-                                            Button {
-                                                showDatePicker(for: item)
-                                            } label: {
-                                                Label("Set Reminder", systemImage: "bell")
-                                                    .font(.caption)
-                                                    .foregroundColor(.blue)
-                                            }
-                                            .disabled(!viewModel.hasNotificationPermission)
+                                            showDatePicker(for: item)
                                         }
-                                    }
-                                    .padding(.leading, 30)
-                                }
-                                
-                                
-                                if !item.tags.isEmpty {
-                                    ScrollView(.horizontal, showsIndicators: false) {
-                                        HStack {
-                                            ForEach(item.tags, id: \.self) { tag in
-                                                Text(tag)
-                                                    .font(.caption)
-                                                    .padding(.horizontal, 8)
-                                                    .padding(.vertical, 2)
-                                                    .background(Color.blue.opacity(0.2))
-                                                    .cornerRadius(10)
-                                                    .foregroundColor(.primary)
-                                            }
-                                        }
-                                        .id(item.tags.hashValue)
-                                    }
-                                    .padding(.leading, 30)
-                                }
-
-                                
-                                Button {
-                                    selectedItemForTags = item
-                                } label: {
-                                    Label("Manage Tags", systemImage: "tag")
+                                    } label: {
+                                        Label(
+                                            item.notificationDate != nil ? "Remove Reminder" : "Add Reminder",
+                                            systemImage: item.notificationDate != nil ? "bell.slash" : "bell"
+                                        )
                                         .font(.caption)
-                                        .foregroundColor(.blue)
+                                        .foregroundColor(item.notificationDate != nil ? .red.opacity(0.8) : .blue)
+                                    }
+                                    
+                                    
+                                    Button {
+                                        selectedItemForTags = item
+                                    } label: {
+                                        Label("Tags", systemImage: "tag")
+                                            .font(.caption)
+                                            .foregroundColor(.blue)
+                                    }
+                                    
+                                    
+                                    Button {
+                                        withAnimation(.easeInOut) {
+                                            viewModel.removeItem(item)
+                                        }
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
+                                            .font(.caption)
+                                            .foregroundColor(.red)
+                                    }
                                 }
-                                .padding(.leading, 30)
+                                .padding(.horizontal, 12)
+                                .padding(.top, 4)
                             }
-                            .padding(.vertical, 4)
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 6)
+                            .contentShape(Rectangle())
+                            .contextMenu {
+                                Button(action: { viewModel.toggleItem(item) }) {
+                                    Label(
+                                        item.isComplete ? "Mark as Incomplete" : "Mark as Complete",
+                                        systemImage: item.isComplete ? "circle" : "checkmark.circle"
+                                    )
+                                }
+                                
+                                Button(action: { selectedItemForTags = item }) {
+                                    Label("Manage Tags", systemImage: "tag")
+                                }
+                                
+                                if !item.isComplete {
+                                    Button(action: { showDatePicker(for: item) }) {
+                                        Label("Set Reminder", systemImage: "bell")
+                                    }
+                                }
+                                
+                                Button(role: .destructive, action: { viewModel.removeItem(item) }) {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
                         }
+                        
                     }
                     if viewModel.filteredItems.isEmpty && !viewModel.searchQuery.isEmpty {
                         VStack(spacing: 20) {
@@ -175,7 +231,6 @@ struct ContentView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .background(Color(.systemBackground))
                     }
-                    
             }
         
         }
@@ -210,6 +265,8 @@ struct ContentView: View {
         formatter.timeStyle = .short
         return formatter.string(from: date)
     }
+        }
+            
 }
 
 struct NotificationDatePicker: View {
@@ -245,115 +302,159 @@ struct TagManagementView: View {
     @State private var newTag: String = ""
     @State private var showAddedAnimation: Bool = false
     @State private var lastAddedTag: String = ""
+    @Environment(\.dismiss) private var dismiss
     
     private var item: ToDoItem? {
         viewModel.toDoItems.first(where: { $0.id == itemId })
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Current Tags")
-                .font(.headline)
+        VStack(spacing: 0) {
             
-            if let item = item, !item.tags.isEmpty {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack {
-                        ForEach(item.tags, id: \.self) { tag in
-                            TagView(tag: tag) {
-                                withAnimation(.spring()) {
-                                    viewModel.removeTagFromTask(itemId, tag: tag)
-                                }
-                            }
-                            .transition(.scale)
-                        }
-                    }
-                    .padding(.vertical, 4)
-                }
-                .id(item.tags.hashValue) 
-            } else {
-                Text("No tags yet")
-                    .foregroundColor(.gray)
-                    .italic()
+            if let item = item {
+                Text(item.title)
+                    .font(.headline)
+                    .lineLimit(1)
+                    .padding(.horizontal)
                     .padding(.vertical, 8)
+                    .frame(maxWidth: .infinity)
+                    .background(Color.blue.opacity(0.1))
             }
             
-            Divider()
+            ScrollView {
+                VStack(alignment: .leading, spacing: 24) {
             
-            HStack {
-                TextField("Add tag", text: $newTag)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .onSubmit {
-                        addTag()
-                    }
-                
-                Button(action: addTag) {
-                    Text("Add")
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
-                        .background(newTag.isEmpty ? Color.gray : Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(6)
-                }
-                .disabled(newTag.isEmpty || item == nil)
-            }
-            
-            if showAddedAnimation {
-                HStack {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundColor(.green)
-                    Text("Added tag: \"\(lastAddedTag)\"")
-                        .foregroundColor(.green)
-                }
-                .padding(.vertical, 4)
-                .transition(.opacity)
-                .onAppear {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        withAnimation {
-                            showAddedAnimation = false
-                        }
-                    }
-                }
-            }
-            
-            Divider()
-            
-            Text("Suggested Tags")
-                .font(.headline)
-                .padding(.top, 8)
-            
-            if let currentItem = item, viewModel.availableTags.filter({ !currentItem.tags.contains($0) }).isEmpty {
-                Text("No more suggestions")
-                    .foregroundColor(.gray)
-                    .italic()
-                    .padding(.vertical, 8)
-            } else {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        if let currentItem = item {
-                            ForEach(viewModel.availableTags.filter { !currentItem.tags.contains($0) }, id: \.self) { tag in
-                                Button(action: {
-                                    withAnimation {
-                                        viewModel.addTagToTask(itemId, tag: tag)
-                                        lastAddedTag = tag
-                                        showAddedAnimation = true
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Current Tags")
+                            .font(.headline)
+                            .foregroundColor(.primary)
+                        
+                        if let currentItem = item, !currentItem.tags.isEmpty {
+                            FlowLayout(spacing: 8) {
+                                ForEach(currentItem.tags, id: \.self) { tag in
+                                    TagPillView(tag: tag, color: tagColor(for: tag)) {
+                                        withAnimation {
+                                            viewModel.removeTagFromTask(itemId, tag: tag)
+                                        }
                                     }
-                                }) {
-                                    Text(tag)
-                                        .padding(.horizontal, 10)
-                                        .padding(.vertical, 5)
-                                        .background(Color.blue.opacity(0.2))
-                                        .cornerRadius(12)
-                                        .foregroundColor(.primary)
+                                    .transition(.scale.combined(with: .opacity))
                                 }
-                                .buttonStyle(BorderlessButtonStyle())
+                            }
+                        } else {
+                            Text("No tags yet")
+                                .italic()
+                                .foregroundColor(.secondary)
+                                .padding(.vertical, 8)
+                        }
+                    }
+                    .padding(.horizontal)
+                    
+                    Divider()
+                    
+                    
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Add New Tag")
+                            .font(.headline)
+                        
+                        HStack {
+                            TextField("Enter tag name", text: $newTag)
+                                .padding(12)
+                                .background(Color(.systemGray6))
+                                .cornerRadius(8)
+                                .submitLabel(.done)
+                                .onSubmit { addTag() }
+                            
+                            Button(action: addTag) {
+                                Image(systemName: "plus")
+                                    .padding(12)
+                                    .background(Color.blue)
+                                    .foregroundColor(.white)
+                                    .cornerRadius(8)
+                            }
+                            .disabled(newTag.isEmpty)
+                            .opacity(newTag.isEmpty ? 0.5 : 1)
+                        }
+                        
+                        if showAddedAnimation {
+                            HStack {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundColor(.green)
+                                Text("Added \"\(lastAddedTag)\"")
+                                    .foregroundColor(.green)
+                            }
+                            .padding(.vertical, 4)
+                            .transition(.opacity)
+                        }
+                    }
+                    .padding(.horizontal)
+                    
+                    Divider()
+                    
+                    
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Suggested Tags")
+                            .font(.headline)
+                        
+                        if let currentItem = item {
+                            let suggestions = viewModel.availableTags.filter { !currentItem.tags.contains($0) }
+                            
+                            if !suggestions.isEmpty {
+                                FlowLayout(spacing: 8) {
+                                    ForEach(suggestions, id: \.self) { tag in
+                                        Button(action: {
+                                            withAnimation {
+                                                viewModel.addTagToTask(itemId, tag: tag)
+                                                lastAddedTag = tag
+                                                showAddedAnimation = true
+                                            }
+                                        }) {
+                                            Text(tag)
+                                                .font(.callout)
+                                                .padding(.horizontal, 12)
+                                                .padding(.vertical, 6)
+                                                .background(Color.gray.opacity(0.15))
+                                                .cornerRadius(16)
+                                                .foregroundColor(.primary)
+                                        }
+                                        .buttonStyle(BorderlessButtonStyle())
+                                    }
+                                }
+                            } else {
+                                Text("No suggestions available")
+                                    .italic()
+                                    .foregroundColor(.secondary)
+                                    .padding(.vertical, 8)
                             }
                         }
                     }
-                    .padding(.vertical, 4)
+                    .padding(.horizontal)
+                }
+                .padding(.vertical, 24)
+            }
+            
+            Divider()
+            
+            Button(action: { dismiss() }) {
+                Text("Done")
+                    .fontWeight(.medium)
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 14)
+                    .background(Color.blue)
+                    .cornerRadius(10)
+                    .padding(.horizontal)
+                    .padding(.vertical, 8)
+            }
+        }
+        .onChange(of: showAddedAnimation) { newValue in
+            if newValue {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    withAnimation {
+                        showAddedAnimation = false
+                    }
                 }
             }
         }
-        .padding()
     }
     
     private func addTag() {
@@ -369,38 +470,84 @@ struct TagManagementView: View {
     }
 }
 
-struct TagView: View {
+
+struct FlowLayout: Layout {
+    var spacing: CGFloat = 10
+    
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let maxWidth = proposal.width ?? 0
+        var totalHeight: CGFloat = 0
+        var lineWidth: CGFloat = 0
+        var lineHeight: CGFloat = 0
+        
+        for subview in subviews {
+            let size = subview.sizeThatFits(.unspecified)
+            
+            if lineWidth + size.width > maxWidth {
+                totalHeight += lineHeight + spacing
+                lineWidth = size.width
+                lineHeight = size.height
+            } else {
+                lineWidth += size.width + spacing
+                lineHeight = max(lineHeight, size.height)
+            }
+        }
+        
+        totalHeight += lineHeight
+        
+        return CGSize(width: maxWidth, height: totalHeight)
+    }
+    
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        var lineWidth: CGFloat = 0
+        var lineHeight: CGFloat = 0
+        var lineStart: CGFloat = bounds.minX
+        var y = bounds.minY
+        
+        for subview in subviews {
+            let size = subview.sizeThatFits(.unspecified)
+            
+            if lineWidth + size.width > bounds.width {
+                y += lineHeight + spacing
+                lineWidth = 0
+                lineHeight = 0
+                lineStart = bounds.minX
+            }
+            
+            let x = lineStart + lineWidth
+            subview.place(at: CGPoint(x: x, y: y), proposal: .unspecified)
+            
+            lineWidth += size.width + spacing
+            lineHeight = max(lineHeight, size.height)
+        }
+    }
+}
+
+
+struct TagPillView: View {
     let tag: String
+    let color: Color
     let onRemove: () -> Void
-    @State private var isPressed: Bool = false
     
     var body: some View {
         HStack(spacing: 4) {
             Text(tag)
-                .font(.caption)
-                .padding(.leading, 8)
-                .padding(.trailing, 0)
-                .padding(.vertical, 4)
+                .font(.callout)
+                .lineLimit(1)
             
             Button(action: onRemove) {
                 Image(systemName: "xmark.circle.fill")
-                    .font(.system(size: 12))
-                    .foregroundColor(.red)
-            }
-            .padding(.trailing, 8)
-        }
-        .background(isPressed ? Color.red.opacity(0.2) : Color.blue.opacity(0.2))
-        .cornerRadius(12)
-        .onTapGesture {
-            
-            withAnimation(.easeInOut(duration: 0.15)) {
-                isPressed = true
-            }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-                withAnimation {
-                    isPressed = false
-                }
+                    .font(.caption)
             }
         }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 6)
+        .background(color.opacity(0.2))
+        .foregroundColor(color)
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(color.opacity(0.5), lineWidth: 1)
+        )
+        .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 }
