@@ -26,19 +26,19 @@ class ToDoListViewModel: ObservableObject {
     
     func addTagToTask(_ itemId: UUID, tag: String) {
         if let index = toDoItems.firstIndex(where: { $0.id == itemId }) {
-            // Don't add if tag already exists or is empty
+            
             let trimmedTag = tag.trimmingCharacters(in: .whitespacesAndNewlines)
             if trimmedTag.isEmpty || toDoItems[index].tags.contains(trimmedTag) {
                 return
             }
             
-            // Add tag to item
+            
             toDoItems[index].tags.append(trimmedTag)
             
-            // Add to available tags if it's new
+            
             if !availableTags.contains(trimmedTag) {
                 availableTags.append(trimmedTag)
-                availableTags.sort() // Keep them sorted
+                availableTags.sort()
             }
             
             objectWillChange.send()
@@ -93,7 +93,7 @@ class ToDoListViewModel: ObservableObject {
         inputTask = ""
         inputPriority = .medium
         
-        sortItems() // Only sort here after the task is added
+        sortItems()
         repository.saveToDoItems(toDoItems)
     }
     
@@ -200,12 +200,12 @@ class ToDoListViewModel: ObservableObject {
     
     func sortItems() {
         toDoItems.sort { item1, item2 in
-            // First sort by completion status
+            
             if item1.isComplete != item2.isComplete {
                 return !item1.isComplete
             }
             
-            // Then sort by priority
+            
             let priorityOrder: [TaskPriority] = [.high, .medium, .low]
             let priority1 = priorityOrder.firstIndex(of: item1.priority) ?? 0
             let priority2 = priorityOrder.firstIndex(of: item2.priority) ?? 0

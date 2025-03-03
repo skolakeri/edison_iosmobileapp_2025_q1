@@ -486,7 +486,6 @@ struct TagManagementView: View {
             
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
-                    // Current tags section
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Current Tags")
                             .font(.headline)
