@@ -33,18 +33,15 @@ class ToDoListViewModel: ObservableObject {
             }
             
             
-            var updatedTags = toDoItems[index].tags
-            updatedTags.append(trimmedTag)
-            toDoItems[index].tags = updatedTags
+            toDoItems[index].tags.append(trimmedTag)
             
             
             if !availableTags.contains(trimmedTag) {
                 availableTags.append(trimmedTag)
+                availableTags.sort()
             }
             
-            
             objectWillChange.send()
-            
             repository.saveToDoItems(toDoItems)
         }
     }
@@ -85,10 +82,17 @@ class ToDoListViewModel: ObservableObject {
     }
     
     func addItem() {
-        if inputTask.isEmpty { return }
-        toDoItems.append(ToDoItem(title: inputTask, priority: inputPriority))
+        guard !inputTask.isEmpty else { return }
+        
+        let newItem = ToDoItem(
+            title: inputTask,
+            priority: inputPriority
+        )
+        
+        toDoItems.append(newItem)
         inputTask = ""
         inputPriority = .medium
+        
         sortItems()
         repository.saveToDoItems(toDoItems)
     }
@@ -159,6 +163,7 @@ class ToDoListViewModel: ObservableObject {
     func toggleHideCompleted() {
         hideCompleted.toggle()
         UserDefaults.standard.set(hideCompleted, forKey: "hideCompleted")
+        sortItems()
     }
     
     func loadData() {
@@ -193,13 +198,22 @@ class ToDoListViewModel: ObservableObject {
         repository.saveToDoItems(toDoItems)
     }
     
-    private func sortItems() {
+    func sortItems() {
         toDoItems.sort { item1, item2 in
+            
             if item1.isComplete != item2.isComplete {
                 return !item1.isComplete
             }
-            return item1.priority.sortOrder < item2.priority.sortOrder
+            
+            
+            let priorityOrder: [TaskPriority] = [.high, .medium, .low]
+            let priority1 = priorityOrder.firstIndex(of: item1.priority) ?? 0
+            let priority2 = priorityOrder.firstIndex(of: item2.priority) ?? 0
+            
+            return priority1 < priority2
         }
+        
+        objectWillChange.send()
     }
     
 }

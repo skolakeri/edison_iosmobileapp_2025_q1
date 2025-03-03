@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		C267AC282D754016002FD962 /* Script.sh in Resources */ = {isa = PBXBuildFile; fileRef = C267AC272D754016002FD962 /* Script.sh */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		C269ECA72D6FFC800035A655 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,6 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C267AC272D754016002FD962 /* Script.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = Script.sh; sourceTree = "<group>"; };
 		C269EC962D6FFC7D0035A655 /* edison_iosmobileapp_2025_q1_test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = edison_iosmobileapp_2025_q1_test.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C269ECA62D6FFC800035A655 /* edison_iosmobileapp_2025_q1_testTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = edison_iosmobileapp_2025_q1_testTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C269ECB02D6FFC800035A655 /* edison_iosmobileapp_2025_q1_testUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = edison_iosmobileapp_2025_q1_testUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -75,6 +80,7 @@
 		C269EC8D2D6FFC7D0035A655 = {
 			isa = PBXGroup;
 			children = (
+				C267AC272D754016002FD962 /* Script.sh */,
 				C269EC982D6FFC7D0035A655 /* edison_iosmobileapp_2025_q1_test */,
 				C269ECA92D6FFC800035A655 /* edison_iosmobileapp_2025_q1_testTests */,
 				C269ECB32D6FFC800035A655 /* edison_iosmobileapp_2025_q1_testUITests */,
@@ -212,6 +218,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C267AC282D754016002FD962 /* Script.sh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
